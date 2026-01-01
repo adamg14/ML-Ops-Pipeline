@@ -1,0 +1,16 @@
+Parameters:
+  ServiceFunctionName:
+    Type: String
+  LambdaFunctionPath:
+    Type: String
+
+Resources:
+  PlatformInitialFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Ref ServiceFunctionName
+      CodeUri: !Ref LambdaFunctionPath
+      Handler: app.lambda_handler
+      Runtime: python3.11
+      Architectures:
+        - x86_64
