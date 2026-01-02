@@ -1,7 +1,19 @@
+Globals:
+  Function:
+    Handler: app.lambda_handler
+    Runtime: python3.11
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        STAGE: Development
+
 Parameters:
   ServiceFunctionName:
     Type: String
   LambdaFunctionPath:
+    Type: String
+  DLQARN:
     Type: String
 
 Resources:
@@ -10,7 +22,12 @@ Resources:
     Properties:
       FunctionName: !Ref ServiceFunctionName
       CodeUri: !Ref LambdaFunctionPath
-      Handler: app.lambda_handler
-      Runtime: python3.11
-      Architectures:
-        - x86_64
+    DeadLetterQueue:
+      Type: SNS
+      TargetArn: !Ref DLQARN
+  
+  PlatformInitialLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${ServiceFunctionName}"
+      RetentionInDays: 14

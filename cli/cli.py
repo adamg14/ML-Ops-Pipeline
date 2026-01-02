@@ -13,6 +13,7 @@ from utils.lambda_function_deployment import deploy_function
 app = typer.Typer(help="Machine Learning Platform CLI - Deploy an AWS Lambda")
 
 # NOTE WITHIN THE CLI __main__.py file, i can potentially create a 
+# ALSO NOTE I CAN DEFINE THE DECORATOR @app.command() more than once so i can create different functions e.g. deploying a lambda function deploying etc
 @app.command()
 def main(
         # ... = no default argument for the

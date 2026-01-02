@@ -6,6 +6,7 @@ logger.setLevel(logging.INFO)
 
 
 def lambda_handler(event, context):
+    # lambas do not need to know their log group name, just log to the stdin/stderr
     logger.info("The lambda function has now started.")
     logger.info(f"CloudWatch logs group: {context.log_group_name}")
 
