@@ -4,9 +4,7 @@ Globals:
     Runtime: python3.11
     Architectures:
       - x86_64
-    Environment:
-      Variables:
-        STAGE: Development
+    
 
 Parameters:
   ServiceFunctionName:
@@ -15,6 +13,11 @@ Parameters:
     Type: String
   DLQARN:
     Type: String
+  Environment:
+    Type: String
+    AllowedValues:
+      - production
+      - development
 
 Resources:
   PlatformInitialFunction:
@@ -25,8 +28,10 @@ Resources:
     DeadLetterQueue:
       Type: SNS
       TargetArn: !Ref DLQARN
+    LogGroupName:
+      Ref: PlatformInitialFunctionLogGroup
   
-  PlatformInitialLogGroup:
+  PlatformInitialFunctionLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub "/aws/lambda/${ServiceFunctionName}"

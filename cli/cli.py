@@ -18,13 +18,15 @@ app = typer.Typer(help="Machine Learning Platform CLI - Deploy an AWS Lambda")
 def main(
         # ... = no default argument for the
         service_name: str = typer.Option(..., "--service-name", help="The name of the Lambda function to be deployed"),
-        code_path: str = typer.Option(..., "--code_path", help="The relative path of the lambda function needing to be deployed"),
-        environment: str = typer.Option("development", "--environment", help="This is the environment that the (development, production)")
+        code_path: str = typer.Option(..., "--code-path", help="The relative path of the lambda function needing to be deployed"),
+        environment: str = typer.Option("development", "--environment", help="This is the environment that the (development, production)"),
+        dead_letter_queue: str = typer.Option(..., "--dead-letter-queue", help="The name of the dead letter queue for events that do not correctly trigger an event for the lambda function.")
 ):
         deploy_function(
                 service_name=service_name,
                 code_path=code_path,
-                environment=environment
+                environment=environment,
+                dead_letter_queue=dead_letter_queue
         )
 
 
