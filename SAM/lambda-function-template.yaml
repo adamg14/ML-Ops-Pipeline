@@ -25,9 +25,12 @@ Resources:
     Properties:
       FunctionName: !Ref ServiceFunctionName
       CodeUri: !Ref LambdaFunctionPath
-    DeadLetterQueue:
-      Type: SNS
-      TargetArn: !Ref DLQARN
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environmetn
+      DeadLetterQueue:
+        Type: SNS
+        TargetArn: !Ref DLQARN
     LogGroupName:
       Ref: PlatformInitialFunctionLogGroup
   
