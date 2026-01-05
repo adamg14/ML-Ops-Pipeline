@@ -14,8 +14,8 @@ Parameters:
     Type: String
   LambdaFunctionPath:
     Type: String
-  DLQARN:
-    Type: String
+  # DLQARN:
+  #   Type: String
   Environment:
     Type: String
     AllowedValues:
@@ -23,6 +23,21 @@ Parameters:
       - development
 
 Resources:
+  # IAM role
+  PlatformInitialFunctionRole:
+    Type: AWS::IAM::Role
+  Properties:
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+    ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaInitialExecutionRole
+
+  # function
   PlatformInitialFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -30,17 +45,14 @@ Resources:
       CodeUri: !Ref LambdaFunctionPath
       Environment:
         Variables:
-          ENVIRONMENT: !Ref Environmetn
-      DeadLetterQueue:
-        Type: SNS
-        TargetArn: !Ref DLQARN
-    LogGroupName:
-      Ref: PlatformInitialFunctionLogGroup
+          ENVIRONMENT: !Ref Environment
+      # DeadLetterQueue:
+      #   Type: SNS
+      #   TargetArn: !Ref DLQARN
   
+  # Log Group
   PlatformInitialFunctionLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub "/aws/lambda/${ServiceFunctionName}"
       RetentionInDays: 14
-      Policies:
-        - AWSLambdaExecutionRole
