@@ -6,26 +6,23 @@ import typer
 def deploy_function(
         service_name,
         code_path,
-        environment
+        environment,
+        dead_letter_queue
 ):
     print(f"service name: {service_name}")
     print(f"code path: {code_path}")
     print(f"environment: {environment}") 
 
     stack_name = f"{environment}-platform"
-
     command = [
         "sam",
-        "deploy",
-        "--stack_name"
+        "deploy", 
+        "--stack-name",
         stack_name,
-        "--parameter-overrrides",
-        f"ServiceFunctionName={service_name}",
-        f"LambdaFunctionPath={code_path}",
-        f"DLQARN={dead_letter_queue}",
-        f"Environment={environment}"
-        "--no-confirm-changeset",
-        "CAPABILITY_IAM"]
+        "--parameter-override",
+        f"LambdaFunctionName={service_name}", f"LambdaFunctionPath={code_path}",
+        f"DLQARN={dead_letter_queue}", f"Environment={environment}", f"--no-confirm-changeset", "CAPABILITY_IAM"
+        ]
 
     typer.echo("Currently running SAM deployment...")
     typer.echo(" ".join(command))
@@ -36,3 +33,6 @@ def deploy_function(
         typer.echo("SAM deployment failed")
         typer.echo(f"Error message: {e}")
         typer.Exit(code=e.returncode)
+
+
+deploy_function("test_function", )

@@ -1,3 +1,6 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
 Globals:
   Function:
     Handler: app.lambda_handler
@@ -39,3 +42,5 @@ Resources:
     Properties:
       LogGroupName: !Sub "/aws/lambda/${ServiceFunctionName}"
       RetentionInDays: 14
+      Policies:
+        - AWSLambdaExecutionRole
