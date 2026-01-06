@@ -15,13 +15,15 @@ def deploy_function(
     stack_name = f"{environment}-platform-lambda-function"
     command = [
         "sam",
-        "deploy", 
+        "deploy",
+        "--template-file SAM/lambda-function-template.yaml"
         "--stack-name",
         stack_name,
         "--parameter-overrides",
         f"ServiceFunctionName={service_name}",
         f"LambdaFunctionPath={code_path}",
-        f"Environment={environment}"
+        f"Environment={environment}",
+
         ]
 
     typer.echo("Currently running SAM deployment...")
