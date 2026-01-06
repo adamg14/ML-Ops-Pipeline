@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Globals:
+  Function:
+    Handler: app.lambda_handler
+    Runtime: python3.10
+    Architectures:
+    - x86_64
+Parameters:
+  ServiceFunctionName:
+    Type: String
+  LambdaFunctionPath:
+    Type: String
+  Environment:
+    Type: String
+    AllowedValues:
+    - production
+    - development
+Resources:
+  PlatformInitialFunctionRole:
+    Type: AWS::IAM::Role
+  Properties:
+    AssumeRolePolicyDocument:
+      Version: '2012-10-17'
+      Statement:
+      - Effect: Allow
+        Principal:
+          Service: lambda.amazonaws.com
+        Action: sts:AssumeRole
+    ManagedPolicyArns:
+    - arn:aws:iam::aws:policy/service-role/AWSLambdaInitialExecutionRole
+  PlatformInitialFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName:
+        Ref: ServiceFunctionName
+      CodeUri: PlatformInitialFunction
+      Environment:
+        Variables:
+          ENVIRONMENT:
+            Ref: Environment
+    Metadata:
+      SamResourceId: PlatformInitialFunction
+  PlatformInitialFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName:
+        Fn::Sub: /aws/lambda/${ServiceFunctionName}
+      RetentionInDays: 14

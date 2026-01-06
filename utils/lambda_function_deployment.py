@@ -1,6 +1,6 @@
 import subprocess
 import typer
-
+import sys
 
 # This function will run a AWS deployment of the lambda function via SAM 
 def deploy_function(
@@ -11,28 +11,21 @@ def deploy_function(
     print(f"service name: {service_name}")
     print(f"code path: {code_path}")
     print(f"environment: {environment}") 
-
-    stack_name = f"{environment}-platform-lambda-function"
+    
+    script_path = "../scripts/deploy_lambda.sh"
     command = [
-        "sam",
-        "deploy",
-        "--template-file SAM/lambda-function-template.yaml"
-        "--stack-name",
-        stack_name,
-        "--parameter-overrides",
-        f"ServiceFunctionName={service_name}",
-        f"LambdaFunctionPath={code_path}",
-        f"Environment={environment}",
+        "bash",
+        str(script_path),
+        service_name,
+        code_path,
+        environment
+    ]
 
-        ]
+    result = subprocess.run(command,text=True)
 
-    typer.echo("Currently running SAM deployment...")
-    typer.echo(" ".join(command))
+    if result.returncode == 0:
+        print("SAM build completed successfully.")
+    else:
+        sys.exit(result.returncode)
 
-    try:
-        subprocess.run(command, check=True)
-    except subprocess.CalledProcessError as e:
-        typer.echo("SAM deployment failed")
-        typer.echo(f"Error message: {e}")
-        typer.Exit(code=e.returncode)
 

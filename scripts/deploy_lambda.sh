@@ -9,6 +9,7 @@ SERVICE_NAME="${1:?service name required}"
 CODE_PATH="${2:?code path required}"
 ENVIRONMENT="${3:-development}"
 AWS_PROFILE="Admin-137345588056"
+AWS_REGION="eu-north-1"
 
 echo $SERVICE_NAME
 echo $CODE_PATH
@@ -32,7 +33,9 @@ echo "Building SAM template..."
 sam build --template-file  "../$TEMPLATE_FILE"
 
 echo "Deploying SAM template..."
-sam deploy \
+sam deploy --guided \
+    --profile $AWS_PROFILE \
+    --region $AWS_REGION \
     --template-file "../$TEMPLATE_FILE" \
     --stack-name $STACK_NAME \
     --parameter-overrides \
