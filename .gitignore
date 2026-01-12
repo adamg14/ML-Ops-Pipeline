@@ -3,3 +3,4 @@ cli/__pycache__/
 SAM/samconfig.toml
 scripts/.aws-sam/
 utils/__pycache__/
+credentials.txt

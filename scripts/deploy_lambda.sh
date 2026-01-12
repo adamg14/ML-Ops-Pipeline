@@ -4,42 +4,20 @@
 set -euo pipefail
 
 # configuration
-# :? is a required check
-SERVICE_NAME="${1:?service name required}"
-CODE_PATH="${2:?code path required}"
-ENVIRONMENT="${3:-development}"
-AWS_PROFILE="Admin-137345588056"
+SERVICE_NAME=$2
+CODE_PATH=$4
+ENVIRONMENT=$6
+
+AWS_PROFILE="mlops_developer"
+
+echo "This is the name of the lambda function: $SERVICE_NAME"
+echo "This is the path to the function code: $CODE_PATH"
+echo "This is the environment: $ENVIRONMENT"
+
+AWS_PROFILE="mlops_developer"
 AWS_REGION="eu-north-1"
 
-echo $SERVICE_NAME
-echo $CODE_PATH
-echo $ENVIRONMENT
+STACK_NAME="$ENVIRONMENT-$SERVICE_NAME-platform-lambda-function"
+echo $STACK_NAME
 
-STACK_NAME="$ENVIRONMENT-platform-lambda-function"
-TEMPLATE_FILE="SAM/lambda-function-template.yaml"
-
-# verification checks
-echo "Checking AWS identity..."
-aws sts get-caller-identity --profile $AWS_PROFILE
-
-echo "Check SAM is installed..."
-# a version for SAM is found or else an error message is returned
-command -v sam || {
-    echo "SAM not installed"
-    exit 1
-}
-
-echo "Building SAM template..."
-sam build --template-file  "../$TEMPLATE_FILE"
-
-echo "Deploying SAM template..."
-sam deploy --guided \
-    --profile $AWS_PROFILE \
-    --region $AWS_REGION \
-    --template-file "../$TEMPLATE_FILE" \
-    --stack-name $STACK_NAME \
-    --parameter-overrides \
-    ServiceFunctionName="$SERVICE_NAME" \
-    LambdaFunctionPath="$CODE_PATH" \
-    Environment="$ENVIRONMENT"
-echo "Deployment complete"
+TEMPLATE_FILE="../SAM/lambda-function-template.yaml"

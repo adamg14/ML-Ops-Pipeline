@@ -9,3 +9,7 @@ A serverless data and machine learning platform on AWS using:
 python cli/deploy_lambda.py --service-name *cloud lambda function name * --code_path *relative local path to lambda function* --environment *development environment*
 
 ./scripts/deploy_lambda.sh --service-name *cloud lambda function name* --code_path *relative local path to lambda function* --environment *development environment*
+
+*Example Command*
+In order to deploy an example lambda function to the development environment:
+- ./scripts/deploy_lambda.sh --service-name hello_world_lambda --code_path ./lambdas/initial_deployment --environment development
