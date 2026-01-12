@@ -12,8 +12,6 @@ Globals:
 Parameters:
   ServiceFunctionName:
     Type: String
-  LambdaFunctionPath:
-    Type: String
   # DLQARN:
   #   Type: String
   Environment:
@@ -23,34 +21,17 @@ Parameters:
       - development
 
 Resources:
-  # IAM role
-  PlatformInitialFunctionRole:
-    Type: AWS::IAM::Role
-  Properties:
-    AssumeRolePolicyDocument:
-      Version: "2012-10-17"
-      Statement:
-        - Effect: Allow
-          Principal:
-            Service: lambda.amazonaws.com
-          Action: sts:AssumeRole
-    ManagedPolicyArns:
-          - arn:aws:iam::aws:policy/service-role/AWSLambdaInitialExecutionRole
-
-  # function
+  # lamdba function resource definition
   PlatformInitialFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Ref ServiceFunctionName
-      CodeUri: !Ref LambdaFunctionPath
+      FunctionName: !Sub "${Environment}-${ServiceFunctionName}"
+      CodeUri: ../lambdas/initial_deployment
       Environment:
         Variables:
           ENVIRONMENT: !Ref Environment
-      # DeadLetterQueue:
-      #   Type: SNS
-      #   TargetArn: !Ref DLQARN
-  
-  # Log Group
+
+  # cloudwatch log group resource definition
   PlatformInitialFunctionLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:

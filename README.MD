@@ -13,3 +13,12 @@ python cli/deploy_lambda.py --service-name *cloud lambda function name * --code_
 *Example Command*
 In order to deploy an example lambda function to the development environment:
 - ./scripts/deploy_lambda.sh --service-name hello_world_lambda --code_path ./lambdas/initial_deployment --environment development
+
+*USEFUL COMMANDS*
+*List Stacks*
+aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE UPDATE_COMPLETE --region *AWS_REGION_NAME* --profile *PROFILE*
+
+*Delete Stacks*
+aws cloudformation delete-stack --stack-name *STACK_NAME* --region eu-north-1 --profile mlops_developer
+<!-- aws-sam-cli-managed-default -->
+<!-- development-lambda-functions -->
