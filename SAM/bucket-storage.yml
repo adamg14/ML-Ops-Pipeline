@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  LandingBucketName:
+    Type: String
+  Environment:
+    Type: String
+    AllowedValues:
+      - production
+      - development
+
+Resources:
+    LandingBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+          BucketName: !Sub "${Environment}-landing-bucket"
+          VersioningConfiguration:
+            Status: Enabled
+      DeletionPolicy: Retain
+      UpdateReplacePolicy: Retain
