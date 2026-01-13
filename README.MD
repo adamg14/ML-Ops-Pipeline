@@ -30,4 +30,6 @@ aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE UPDATE_COMP
 ```
 
 ### Delete Stacks
+```bash
 aws cloudformation delete-stack --stack-name *STACK_NAME* --region eu-north-1 --profile mlops_developer
+```
