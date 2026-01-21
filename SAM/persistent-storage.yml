@@ -2,36 +2,50 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 
 Parameters:
-  LandingBucketName:
-    Type: String
   Environment:
     Type: String
-    AllowedValues:
-      - production
+    AllowedValues: 
       - development
+      - production
 
 Resources:
     LandingBucket:
       Type: AWS::S3::Bucket
+      DeletionPolicy: Retain
+      UpdateReplacePolicy: Retain
       Properties:
           BucketName: !Sub "${Environment}-landing-bucket"
           VersioningConfiguration:
             Status: Enabled
+      
+    SanitisedBucket:
+      Type: AWS::S3::Bucket
       DeletionPolicy: Retain
       UpdateReplacePolicy: Retain
+      Properties:
+          BucketName: !Sub "${Environment}-sanitised-bucket"
+          VersioningConfiguration:
+            Status: Enabled
+
+    CuratedBucket:
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Retain
+      UpdateReplacePolicy: Retain
+      Properties:
+          BucketName: !Sub "${Environment}-curated-bucket"
+          VersioningConfiguration:
+            Status: Enabled
     
     FileTable:
       Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      UpdateReplacePolicy: Retain
       Properties:
         TableName: !Sub "${Environment}-file-table"
         AttributeDefinitions:
           - AttributeName: "BucketName"
             AttributeType: "S"
           - AttributeName: "FileName"
-            AttributeType: "S"
-          - AttributeName: "Sanitised"
-            AttributeType: "S"
-          - AttributeName: "Curated"
             AttributeType: "S"
         KeySchema:
           - AttributeName: "BucketName"
@@ -40,16 +54,22 @@ Resources:
             KeyType: "RANGE"
         BillingMode: PAY_PER_REQUEST
         SSESpecification:
-          SSEENABLED: true
-        DeletionPolicy: Retain
-        UpdateReplacePolicy: Retain
+          SSEEnabled: true
 
 Outputs:
   LandingBucketName:
     Value: !Ref LandingBucket
     Export:
       Name: !Sub "${Environment}-landing-bucket"
+  SanitisedBucketName:
+    Value: !Ref SanitisedBucket
+    Export:
+      Name: !Sub "${Environment}-sanitised-bucket"
+  CuratedBucket:
+    Value: !Ref CuratedBucket
+    Export:
+      Name: !Sub "${Environment}-curated-bucket"
   FileTableName:
     Value: !Ref FileTable
     Export:
-      Name: !Sub ${Environment}-file-table"
+      Name: !Sub "${Environment}-file-table"
