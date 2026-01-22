@@ -8,6 +8,18 @@ A serverless data and machine learning platform on AWS using:
 6. AWS Glue = serverless data integration service used to create job for sanitising and curating the raw data.
 7. AWS SageMaker = Used to manage end-to-end Machine Learning workflows.
 
+##  Prerequisites
+- AWS identity configured
+```bash
+aws configure
+aws sts get-caller-identity
+```
+
+- SAM installed 
+```bash
+sam --version
+```
+
 ## Commands
 ```bash
 python cli/deploy_lambda.py --service-name *cloud lambda function name * --code_path *relative local path to lambda function* --environment *development environment*
