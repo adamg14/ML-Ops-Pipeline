@@ -26,7 +26,11 @@ Resources:
           BucketName: !Sub "${Environment}-sanitised-bucket"
           VersioningConfiguration:
             Status: Enabled
-
+          NotificationConfiguration:
+            LambdaConfigurations:
+              - Event: s3:ObjectCreated:*
+                Function: !ImportValue !Sub "${Environment}-upload-function-arn"
+            
     CuratedBucket:
       Type: AWS::S3::Bucket
       DeletionPolicy: Retain
@@ -55,33 +59,12 @@ Resources:
         BillingMode: PAY_PER_REQUEST
         SSESpecification:
           SSEEnabled: true
+    
+    PermissionForS3UploadFunction:
+      Types: AWS::Lambda::Permission
+      Properties:
+        FunctionName: !ImportValue !Sub "${Environment}-upload-function-arn"
+        Action: lambda:InvokeFunction
+        Principal: s3.amazonaws.com
+        SourceArn: LandingBucket.Arn
 
-Outputs:
-  LandingBucketName:
-    Value: !Ref LandingBucket
-    Export:
-      Name: !Sub "${Environment}-landing-bucket"
-  LandingBucketArn:
-    Value: !GetAtt LandingBucket.Arn
-    Export:
-      Name: !Sub "${Environment}-landing-bucket-arn"
-  SanitisedBucketName:
-    Value: !Ref SanitisedBucket
-    Export:
-      Name: !Sub "${Environment}-sanitised-bucket"
-  SanitisedBucketArn:
-    Value: !GetAtt SanitisedBucket.Arn
-    Export:
-      Name: !Sub "${Environment}-sanitised-bucket-arn"
-  CuratedBucketName:
-    Value: !Ref CuratedBucket
-    Export:
-      Name: !Sub "${Environment}-curated-bucket-arn"
-  CuratedBucketArn:
-    Value: !GetAtt CuratedBucket.Arn
-    Export:
-      Name: !Sub "${Environment}-curated-bucket-arn"
-  FileTableName:
-    Value: !Ref FileTable
-    Export:
-      Name: !Sub "${Environment}-file-table"
