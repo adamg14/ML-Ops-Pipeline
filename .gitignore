@@ -5,3 +5,4 @@ scripts/.aws-sam/
 utils/__pycache__/
 credentials.txt
 .aws-sam/
+scratchpad.py

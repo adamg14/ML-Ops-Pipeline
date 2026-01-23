@@ -12,8 +12,6 @@ Globals:
 Parameters:
   ServiceFunctionName:
     Type: String
-  # DLQARN:
-  #   Type: String
   Environment:
     Type: String
     AllowedValues:
@@ -37,3 +35,19 @@ Resources:
     Properties:
       LogGroupName: !Sub "/aws/lambda/${ServiceFunctionName}"
       RetentionInDays: 14
+  
+  LandingBucketUploadFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${Environment}-landing-bucket-upload"
+      CodeUri: ../lambdas/landing_triggers
+    Envrionment:
+      Variables:
+        ENVIRONMENT: !Ref Environment
+    
+    LandingBucketUploadLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: !Sub "/aws/lambda/LandingBucketUpload"
+        RetentionInDays: 14
+        
