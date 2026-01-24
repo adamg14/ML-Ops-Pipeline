@@ -29,7 +29,9 @@ Resources:
           NotificationConfiguration:
             LambdaConfigurations:
               - Event: s3:ObjectCreated:*
-                Function: !ImportValue !Sub "${Environment}-upload-function-arn"
+                Function:
+                  Fn::ImportValue:
+                    Fn::Sub: "${Environment}-upload-function-arn"
             
     CuratedBucket:
       Type: AWS::S3::Bucket
@@ -61,10 +63,13 @@ Resources:
           SSEEnabled: true
     
     PermissionForS3UploadFunction:
-      Types: AWS::Lambda::Permission
+      Type: AWS::Lambda::Permission
       Properties:
-        FunctionName: !ImportValue !Sub "${Environment}-upload-function-arn"
+        FunctionName:
+          Fn::ImportValue:
+            Fn::Sub:
+              "${Environment}-upload-function-arn"
         Action: lambda:InvokeFunction
         Principal: s3.amazonaws.com
-        SourceArn: LandingBucket.Arn
+        SourceArn: !GetAtt LandingBucket.Arn
 

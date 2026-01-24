@@ -45,3 +45,8 @@ aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE UPDATE_COMP
 ```bash
 aws cloudformation delete-stack --stack-name *STACK_NAME* --region eu-north-1 --profile mlops_developer
 ```
+
+## Deployment Order
+The SAM templates which represent stacks should be (due to export dependencies):
+1. lambda-function-template.yml
+2. persistent-storage.yml

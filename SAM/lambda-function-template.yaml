@@ -10,8 +10,6 @@ Globals:
     
 
 Parameters:
-  ServiceFunctionName:
-    Type: String
   Environment:
     Type: String
     AllowedValues:
@@ -23,7 +21,7 @@ Resources:
   PlatformInitialFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub "${Environment}-${ServiceFunctionName}"
+      FunctionName: !Sub "${Environment}-initial-function"
       CodeUri: ../lambdas/initial_deployment
       Environment:
         Variables:
@@ -33,23 +31,23 @@ Resources:
   PlatformInitialFunctionLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub "/aws/lambda/${ServiceFunctionName}"
+      LogGroupName: !Sub "/aws/lambda/initial-function"
       RetentionInDays: 14
   
   LandingBucketUploadFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub "${Environment}-landing-bucket-upload"
-      CodeUri: ../lambdas/landing_triggers
-    Envrionment:
+      CodeUri: ../lambdas/landing_trigger
+    Environment:
       Variables:
         ENVIRONMENT: !Ref Environment
     
-    LandingBucketUploadLogGroup:
-      Type: AWS::Logs::LogGroup
-      Properties:
-        LogGroupName: !Sub "/aws/lambda/LandingBucketUpload"
-        RetentionInDays: 14
+  LandingBucketUploadLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/LandingBucketUpload"
+      RetentionInDays: 14
 
 Outputs:
   LandingBucketUploadFunction:

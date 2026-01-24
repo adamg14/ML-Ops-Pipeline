@@ -4,13 +4,12 @@
 set -euo pipefail
 
 # configuration
-SERVICE_NAME=$2
-ENVIRONMENT=$4
+ENVIRONMENT=$2
 
 WORK_DIR="$(pwd)"
 AWS_PROFILE="mlops_developer"
 
-echo "This is the name of the lambda function: $SERVICE_NAME"
+
 echo "This is the environment: $ENVIRONMENT"
 
 AWS_PROFILE="mlops_developer"
@@ -40,6 +39,5 @@ sam deploy \
     --template-file "$TEMPLATE_FILE" \
     --stack-name $STACK_NAME \
     --parameter-overrides \
-    ServiceFunctionName="$SERVICE_NAME" \
     Environment="$ENVIRONMENT"
 echo "SAM deployment completed successfully!"
