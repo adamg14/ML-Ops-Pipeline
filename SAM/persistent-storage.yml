@@ -17,6 +17,7 @@ Resources:
           BucketName: !Sub "${Environment}-landing-bucket"
           VersioningConfiguration:
             Status: Enabled
+
       
     SanitisedBucket:
       Type: AWS::S3::Bucket
@@ -26,12 +27,6 @@ Resources:
           BucketName: !Sub "${Environment}-sanitised-bucket"
           VersioningConfiguration:
             Status: Enabled
-          NotificationConfiguration:
-            LambdaConfigurations:
-              - Event: s3:ObjectCreated:*
-                Function:
-                  Fn::ImportValue:
-                    Fn::Sub: "${Environment}-upload-function-arn"
             
     CuratedBucket:
       Type: AWS::S3::Bucket
@@ -62,14 +57,3 @@ Resources:
         SSESpecification:
           SSEEnabled: true
     
-    PermissionForS3UploadFunction:
-      Type: AWS::Lambda::Permission
-      Properties:
-        FunctionName:
-          Fn::ImportValue:
-            Fn::Sub:
-              "${Environment}-upload-function-arn"
-        Action: lambda:InvokeFunction
-        Principal: s3.amazonaws.com
-        SourceArn: !GetAtt LandingBucket.Arn
-

@@ -49,6 +49,7 @@ Resources:
       LogGroupName: !Sub "/aws/lambda/LandingBucketUpload"
       RetentionInDays: 14
 
+
 Outputs:
   LandingBucketUploadFunction:
     Value: !Ref LandingBucketUploadFunction
