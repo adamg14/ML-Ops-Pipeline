@@ -1,0 +1,2 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Step Function to trigger the lambda function on the addition of the file to the landing bucket 

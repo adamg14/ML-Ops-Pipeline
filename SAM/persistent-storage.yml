@@ -57,3 +57,12 @@ Resources:
         SSESpecification:
           SSEEnabled: true
     
+Outputs:
+  LandingBucket:
+    Value: !Ref LandingBucket
+    Export:
+      Name: !Sub "${Environment}-landing-bucket"
+  LandingBucketUploadFunctionArn:
+    Value: !GetAtt LandingBucket.Arn
+    Export:
+      Name: !Sub "${Environment}-landing-bucket-arn"
