@@ -56,7 +56,6 @@ Resources:
       Type: String
       Name: !Sub "${Environment}/services/lambdas/names/landingbucketfunction"
       
-  
   LandingFunctionArnParam:
     Type: AWS::SSM::Parameter
     Properties:

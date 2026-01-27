@@ -18,7 +18,6 @@ Resources:
           VersioningConfiguration:
             Status: Enabled
 
-      
     SanitisedBucket:
       Type: AWS::S3::Bucket
       DeletionPolicy: Retain
@@ -57,45 +56,4 @@ Resources:
         SSESpecification:
           SSEEnabled: true
     
-    LandingBucketParam:
-      Type: AWS::SSM::Parameter
-      Properties:
-        Value: !Ref LandingBucket
-        Type: String
-        Name: !Sub "${Environment}/services/buckets/names/landingbucket"
-      
-    LandingBucketArnParam:
-      Type: AWS::SSM::Parameter
-      Properties:
-        Value: !GetAtt LandingBucket.Arn
-        Type: String
-        Name: !Sub "${Environment}/services/buckets/arn/landingbucketarn"
-    
-    CuratedBucketParam:
-      Type: AWS::SSM::Parameter
-      Properties:
-        Value: !Ref CuratedBucket
-        Type: String
-        Name: !Sub "${Environment}/services/buckets/names/curatedbucket"
-      
-    CuratedBucketArnParam:
-      Type: AWS::SSM::Parameter
-      Properties:
-        Value: !GetAtt CuratedBucket.Arn
-        Type: String
-        Name: !Sub "${Environment}/services/buckets/arn/curatedbucketarn"
-    
-    SanitisedBucketParam:
-      Type: AWS::SSM::Parameter
-      Properties:
-        Value: !Ref SanitisedBucket
-        Type: String
-        Name: !Sub "${Environment}/services/buckets/names/sanitisedbucket"
-      
-    SanitisedBucketArnParam:
-      Type: AWS::SSM::Parameter
-      Properties:
-        Value: !GetAtt SanitisedBucket.Arn
-        Type: String
-        Name: !Sub "${Environment}/services/buckets/arn/sanitisedbucketarn"
     
