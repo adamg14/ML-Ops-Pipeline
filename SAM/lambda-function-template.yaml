@@ -48,14 +48,18 @@ Resources:
     Properties:
       LogGroupName: !Sub "/aws/lambda/LandingBucketUpload"
       RetentionInDays: 14
-
-
-Outputs:
-  LandingBucketUploadFunction:
-    Value: !Ref LandingBucketUploadFunction
-    Export:
-      Name: !Sub "${Environment}-upload-function"
-  LandingBucketUploadFunctionArn:
-    Value: !GetAtt LandingBucketUploadFunction.Arn
-    Export:
-      Name: !Sub "${Environment}-upload-function-arn"
+  
+  LandingBucketFuncionParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Value: !Ref LandingBucketUploadFunction
+      Type: String
+      Name: !Sub "${Environment}/services/lambdas/names/landingbucketfunction"
+      
+  
+  LandingFunctionArnParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Value: !GetAtt LandingBucketUploadFunction.Arn
+      Type: String
+      Name: !Sub "${Environment}/services/lambdas/arn/landingbucketfunctionarn"
