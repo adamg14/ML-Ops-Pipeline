@@ -62,3 +62,69 @@ Resources:
       Value: !GetAtt LandingBucketUploadFunction.Arn
       Type: String
       Name: !Sub "${Environment}/services/lambdas/arn/landingbucketfunctionarn"
+  
+  LandingQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${Environment}-landing-queue"
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 864000
+  
+  SanitisedQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${Environment}-sanitised-queue"
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 864000
+  
+  CuratedQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${Environment}-curated-queue"
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 864000
+
+  # EventBridge rules
+  S3ToSqsRule:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source: ["aws.s3"]
+        detail-type: ["Object Creation"]
+        detail:
+          bucket:
+            name: ["{{resolve:ssm:/${Environment}/services/buckets/names/landingbucket}}"]
+      State: "ENABLED"
+      Targets:
+        - Arn: !GetAtt LandingQueue.Arn
+          Id: "LandingQueueTarget"
+
+  S3ToSqsRule:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source: ["aws.s3"]
+        detail-type: ["Object Creation"]
+        detail:
+          bucket:
+            name: ["{{resolve:ssm:/${Environment}/services/buckets/names/sanitisedbucket}}"]
+        State: "ENABLED"
+        Targets:
+          - Arn: !GetAtt SanitisedQueue.Arn
+            Id: "SanitisedQueueTarget"
+    
+    S3ToSqsRule:
+      Type: AWS::EventsRule
+      Properties:
+        EventPattern:
+          source: ["aws.s3"]
+          detail-type: ["Object Creation"]
+          detail:
+            bucket:
+              name: ["{{resolve:ssm:/${Environment}/services/buckets/names/curatedbucket}}"]
+          State: "ENABLED"
+          Targets:
+            - Arn: !GetAtt
+              Id: "CuratedQueueTarget"
+
+  # this policy will allow EventBridge to put messages in SQS
