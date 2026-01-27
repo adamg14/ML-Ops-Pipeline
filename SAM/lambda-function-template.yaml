@@ -85,7 +85,7 @@ Resources:
       MessageRetentionPeriod: 864000
 
   # EventBridge rules
-  S3ToSqsRule:
+  LandingSqsRule:
     Type: AWS::Events::Rule
     Properties:
       EventPattern:
@@ -93,13 +93,14 @@ Resources:
         detail-type: ["Object Creation"]
         detail:
           bucket:
-            name: ["{{resolve:ssm:/${Environment}/services/buckets/names/landingbucket}}"]
+            name: 
+              - "{{resolve:ssm:/${Environment}/services/buckets/names/landingbucket}}"
       State: "ENABLED"
       Targets:
         - Arn: !GetAtt LandingQueue.Arn
           Id: "LandingQueueTarget"
 
-  S3ToSqsRule:
+  SanitisedSqsRule:
     Type: AWS::Events::Rule
     Properties:
       EventPattern:
@@ -107,24 +108,57 @@ Resources:
         detail-type: ["Object Creation"]
         detail:
           bucket:
-            name: ["{{resolve:ssm:/${Environment}/services/buckets/names/sanitisedbucket}}"]
-        State: "ENABLED"
-        Targets:
-          - Arn: !GetAtt SanitisedQueue.Arn
-            Id: "SanitisedQueueTarget"
+            name: 
+              - "{{resolve:ssm:/${Environment}/services/buckets/names/sanitisedbucket}}"
+      State: "ENABLED"
+      Targets:
+        - Arn: !GetAtt SanitisedQueue.Arn
+          Id: "SanitisedQueueTarget"
     
-    S3ToSqsRule:
-      Type: AWS::EventsRule
+    CuratedSqsRule:
+      Type: AWS::Events::Rule
       Properties:
         EventPattern:
           source: ["aws.s3"]
           detail-type: ["Object Creation"]
           detail:
             bucket:
-              name: ["{{resolve:ssm:/${Environment}/services/buckets/names/curatedbucket}}"]
-          State: "ENABLED"
-          Targets:
-            - Arn: !GetAtt
-              Id: "CuratedQueueTarget"
+              name: 
+                - "{{resolve:ssm:/${Environment}/services/buckets/names/curatedbucket}}"
+        State: "ENABLED"
+        Targets:
+          - Arn: !GetAtt CuratedQueue.Arn
+            Id: "CuratedQueueTarget"
 
   # this policy will allow EventBridge to put messages in SQS
+    SqsQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        Queues: [
+          !Ref LandingQueue,
+          !Ref SanitisedQueue,
+          !Ref CuratedQueue
+        ]
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal: {Service: "events.amazonaws.com"}
+              Action: "sqs:SendMessage"
+              Resource: !GetAtt LandingQueue.Arn
+              Condition:
+                ArnEquals:
+                  aws:SourceArn: !GetAtt LandingSqsRule.Arn
+            - Effect: Allow
+              Principal: {Service: "events.amazonaws.com"}
+              Action: "sqs:SendMessage"
+              Resource: !GetAtt SanitisedQueue.Arn
+              Condition:
+                ArnEquals:
+                  aws:SourceArn: !GetAtt SanitisedSqsRule.Arn
+            - Effect: Allow
+              Principal: {Service: "events.amazonaws.com"}
+              Action: "sqs:SendMessage"
+              Resource: !GetAtt CuratedQueue.Arn
+              Condition:
+                ArnEquals:
+                  aws:SourceArn: !GetAtt CuratedSqsRule.Arn
