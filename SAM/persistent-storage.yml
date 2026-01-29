@@ -58,6 +58,7 @@ Resources:
     
     LandingBucketParam:
       Type: AWS::SSM::Parameter
+      DependsOn: LandingBucket
       Properties:
         Value: !Ref LandingBucket
         Type: String
@@ -65,6 +66,7 @@ Resources:
       
     LandingBucketArnParam:
       Type: AWS::SSM::Parameter
+      DependsOn: LandingBucket
       Properties:
         Value: !GetAtt LandingBucket.Arn
         Type: String
@@ -72,6 +74,7 @@ Resources:
     
     SanitisedBucketParam:
       Type: AWS::SSM::Parameter
+      DependsOn: SanitisedBucket
       Properties:
         Value: !Ref SanitisedBucket
         Type: String
@@ -79,6 +82,7 @@ Resources:
       
     SanitisedBucketArnParam:
       Type: AWS::SSM::Parameter
+      DependsOn: SanitisedBucket
       Properties:
         Value: !GetAtt SanitisedBucket.Arn
         Type: String
@@ -86,6 +90,7 @@ Resources:
     
     CuratedBucketParam:
       Type: AWS::SSM::Parameter
+      DependsOn: CuratedBucket
       Properties:
         Value: !Ref CuratedBucket
         Type: String
@@ -93,6 +98,7 @@ Resources:
       
     CuratedBucketArnParam:
       Type: AWS::SSM::Parameter
+      DependsOn: CuratedBucket
       Properties:
         Value: !GetAtt CuratedBucket.Arn
         Type: String
@@ -100,6 +106,7 @@ Resources:
     
     FileTableParam:
       Type: AWS::SSM::Parameter
+      DependsOn: FileTable
       Properties:
         Value: !Ref FileTable
         Type: String
@@ -107,6 +114,7 @@ Resources:
     
     FileTableArnParam:
       Type: AWS::SSM::Parameter
+      DependsOn: FileTable
       Properties:
         Value: !GetAtt FileTable.Arn
         Type: String
