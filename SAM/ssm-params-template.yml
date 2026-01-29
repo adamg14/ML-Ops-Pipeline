@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues: 
+      - development
+      - production
+
+Resources:
+  FileTableNameParam:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Name: !Sub "/${Environment}/services/dynamodb/names/filetablename"
+      Type: String
+      Value: !ImportValue "${Environment}-FileTableName"
+      Overwrite: true
+  FileTableArnParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/${Environment}/services/dynamodb/arns/filetablearn"
+      Type: String
+      Value: !ImportValue "${Environment}-FileTableArn"
+      Overwrite: true
+  LandingBucketNameParam:
+    Type: AWS::SSM::Paramete
+    Properties:
+      Name: !Sub "/${Environment}/services/storagebucket/names/landingbucketname"
+      Type: String
+      Value: !ImportValue "${Environment}-LandingBucketName"

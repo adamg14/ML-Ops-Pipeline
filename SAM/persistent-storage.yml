@@ -38,7 +38,6 @@ Resources:
     
     FileTable:
       Type: AWS::DynamoDB::Table
-      DeletionPolicy: Retain
       UpdateReplacePolicy: Retain
       Properties:
         TableName: !Sub "${Environment}-file-table"
@@ -56,69 +55,21 @@ Resources:
         SSESpecification:
           SSEEnabled: true
     
-    LandingBucketParam:
-      Type: AWS::SSM::Parameter
-      DependsOn: LandingBucket
-      Properties:
-        Value: !Ref LandingBucket
-        Type: String
-        Name: !Sub "${Environment}/services/buckets/names/landingbucket"
-      
-    LandingBucketArnParam:
-      Type: AWS::SSM::Parameter
-      DependsOn: LandingBucket
-      Properties:
-        Value: !GetAtt LandingBucket.Arn
-        Type: String
-        Name: !Sub "${Environment}/services/buckets/arn/landingbucketarn"
-    
-    SanitisedBucketParam:
-      Type: AWS::SSM::Parameter
-      DependsOn: SanitisedBucket
-      Properties:
-        Value: !Ref SanitisedBucket
-        Type: String
-        Name: !Sub "${Environment}/services/buckets/names/sanitisedbucket"
-      
-    SanitisedBucketArnParam:
-      Type: AWS::SSM::Parameter
-      DependsOn: SanitisedBucket
-      Properties:
-        Value: !GetAtt SanitisedBucket.Arn
-        Type: String
-        Name: !Sub "${Environment}/services/buckets/arn/sanitisedbucketarn"
-    
-    CuratedBucketParam:
-      Type: AWS::SSM::Parameter
-      DependsOn: CuratedBucket
-      Properties:
-        Value: !Ref CuratedBucket
-        Type: String
-        Name: !Sub "${Environment}/services/buckets/names/curatedbucket"
-      
-    CuratedBucketArnParam:
-      Type: AWS::SSM::Parameter
-      DependsOn: CuratedBucket
-      Properties:
-        Value: !GetAtt CuratedBucket.Arn
-        Type: String
-        Name: !Sub "${Environment}/services/buckets/arn/curatedbucketarn"
-    
-    FileTableParam:
-      Type: AWS::SSM::Parameter
-      DependsOn: FileTable
-      Properties:
-        Value: !Ref FileTable
-        Type: String
-        Name: !Sub "${Environment}/services/dynamodb/names/filetable" 
-    
-    FileTableArnParam:
-      Type: AWS::SSM::Parameter
-      DependsOn: FileTable
-      Properties:
-        Value: !GetAtt FileTable.Arn
-        Type: String
-        Name: !Sub "${Environment}/services/dynamodb/arn/filetablearn" 
+Outputs:
+  FileTableName:
+    Value: !Ref FileTable
+    Export:
+      Name: !Sub "${Environment}-FileTableName"
+
+  FileTableArn:
+    Value: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${Environment}-file-table"
+    Export:
+      Name: !Sub "${Environment}-FileTableArn"
+  
+  LandingBucketName:
+    Value: !Ref LandingBucket
+    Export:
+      Name: !Sub "${Environment}-LandingBucketName"
     
 
     
