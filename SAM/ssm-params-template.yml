@@ -14,18 +14,60 @@ Resources:
     Properties: 
       Name: !Sub "/${Environment}/services/dynamodb/names/filetablename"
       Type: String
-      Value: !ImportValue "${Environment}-FileTableName"
+      Value: !ImportValue !Sub "${Environment}-FileTableName"
       Overwrite: true
+
   FileTableArnParam:
     Type: AWS::SSM::Parameter
     Properties:
       Name: !Sub "/${Environment}/services/dynamodb/arns/filetablearn"
       Type: String
-      Value: !ImportValue "${Environment}-FileTableArn"
+      Value: !ImportValue !Sub "${Environment}-FileTableArn"
       Overwrite: true
+
   LandingBucketNameParam:
-    Type: AWS::SSM::Paramete
+    Type: AWS::SSM::Parameter
     Properties:
       Name: !Sub "/${Environment}/services/storagebucket/names/landingbucketname"
       Type: String
-      Value: !ImportValue "${Environment}-LandingBucketName"
+      Value: !ImportValue !Sub "${Environment}-LandingBucketName"
+      Overwrite: true
+  
+  LandingBucketArnParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/${Environment}/services/storagebucket/arn/landingbucketarn"
+      Type: String
+      Value: !ImportValue !Sub "${Environment}-LandingBucketArn"
+      Overwrite: true
+  
+  SanitisedBucketNameParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/${Environment}/services/storagebucket/names/sanitisedbucketname"
+      Type: String
+      Value: !ImportValue !Sub "${Environment}-SanitisedBucketName"
+      Overwrite: true
+  
+  SanitisedBucketArnParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/${Environment}/services/storagebucket/arn/sanitisedbucketarn"
+      Value: !ImportValue !Sub "${Environment}-SanitisedBucketArn"
+      Overwrite: true
+  
+  CuratedBucketNameParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/${Environment}/services/storagebucket/names/curatedbucketname"
+      Value: !ImportValue !Sub "${Environment}-CuratedBucketName"
+      Overwrite: true
+
+  CuratedBucketArnParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/${Environment}/services/storagebucket/arn/curatedbucketarn"
+      Value: !ImportValue !Sub "${Environment}-CuratedBucketArn"
+      Overwrite: true
+
+

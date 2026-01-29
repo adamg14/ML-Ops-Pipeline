@@ -70,6 +70,31 @@ Outputs:
     Value: !Ref LandingBucket
     Export:
       Name: !Sub "${Environment}-LandingBucketName"
+  
+  LandingBucketArn:
+    Value: !GetAtt LandingBucket.Arn
+    Export:
+      Name: !Sub "${Environment}-LandingBucketArn"
+
+  SanitisedBucketName:
+    Value: !Ref SanitisedBucket
+    Export:
+      Name: !Sub "${Environment}-SanitisedBucketName"
+  
+  SanitisedBucketArn:
+    Value: !GetAtt SanitisedBucket.Arn
+    Export:
+      Name: !Sub "${Environment}-SanitisedBucketArn"
+  
+  CuratedBucketName:
+    Value: !Ref CuratedBucket
+    Export:
+      Name: !Sub "${Environment}-CuratedBucketName"
+  
+  CuratedBucketArn:
+    Value: !GetAtt CuratedBucket.Arn
+    Export:
+      Name: !Sub "${Environment}-CuratedBucketArn"
     
 
     
