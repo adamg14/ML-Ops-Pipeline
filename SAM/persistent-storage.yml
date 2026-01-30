@@ -9,51 +9,102 @@ Parameters:
       - production
 
 Resources:
-    LandingBucket:
-      Type: AWS::S3::Bucket
-      DeletionPolicy: Retain
-      UpdateReplacePolicy: Retain
-      Properties:
-          BucketName: !Sub "${Environment}-landing-bucket"
-          VersioningConfiguration:
-            Status: Enabled
+  LandingBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub "${Environment}-landing-bucket"
+      VersioningConfiguration:
+        Status: Enabled
 
-    SanitisedBucket:
-      Type: AWS::S3::Bucket
-      DeletionPolicy: Retain
-      UpdateReplacePolicy: Retain
-      Properties:
-          BucketName: !Sub "${Environment}-sanitised-bucket"
-          VersioningConfiguration:
-            Status: Enabled
+  SanitisedBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub "${Environment}-sanitised-bucket"
+      VersioningConfiguration:
+      Status: Enabled
             
-    CuratedBucket:
-      Type: AWS::S3::Bucket
-      DeletionPolicy: Retain
-      UpdateReplacePolicy: Retain
-      Properties:
-          BucketName: !Sub "${Environment}-curated-bucket"
-          VersioningConfiguration:
-            Status: Enabled
+  CuratedBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub "${Environment}-curated-bucket"
+      VersioningConfiguration:
+      Status: Enabled
     
-    FileTable:
-      Type: AWS::DynamoDB::Table
-      UpdateReplacePolicy: Retain
+  FileTable:
+    Type: AWS::DynamoDB::Table
+    UpdateReplacePolicy: Retain
+    Properties:
+      TableName: !Sub "${Environment}-file-table"
+      AttributeDefinitions:
+        - AttributeName: "BucketName"
+          AttributeType: "S"
+        - AttributeName: "FileName"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "BucketName"
+          KeyType: "HASH"
+        - AttributeName: "FileName"
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
+      SSESpecification:
+        SSEEnabled: true
+  
+  LandingQueue:
+    Type: AWS::SQS::Queue
+    DependsOn: LandingDLQ
+    Properties:
+      QueueName: !Sub "${Environment}-landing-queue"
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 864000
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt LandingDLQ.Arn
+  
+  SanitisedQueue:
+    Type: AWS::SQS::Queue
+    DependsOn: SanitisedDQL
+    Properties:
+      QueueName: !Sub "${Environment}-sanitised-queue"
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 864000
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt SanitisedDQL.Arn
+
+  CuratedQueue:
+    Type: AWS::SQS::Queue
+    DependsOn: CuratedDLQ.Arn
+    Properties:
+      QueueName: !Sub "${Environment}-curated-queue"
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 864000
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt CuratedDLQ 
+    
+  LandingDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${Environment}-landing-dlq"
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 864000
+    
+  SanitisedDQL:
+      Type: AWS::SQS::Queue
       Properties:
-        TableName: !Sub "${Environment}-file-table"
-        AttributeDefinitions:
-          - AttributeName: "BucketName"
-            AttributeType: "S"
-          - AttributeName: "FileName"
-            AttributeType: "S"
-        KeySchema:
-          - AttributeName: "BucketName"
-            KeyType: "HASH"
-          - AttributeName: "FileName"
-            KeyType: "RANGE"
-        BillingMode: PAY_PER_REQUEST
-        SSESpecification:
-          SSEEnabled: true
+        QueueName: !Sub "${Environment}-sanitised-dlq"
+        VisibilityTimeout: 300
+        MessageRetentionPeriod: 864000
+
+  CuratedDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${Environment}-curated-dlq"
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 864000
     
 Outputs:
   FileTableName:
@@ -95,6 +146,8 @@ Outputs:
     Value: !GetAtt CuratedBucket.Arn
     Export:
       Name: !Sub "${Environment}-CuratedBucketArn"
+  
+
     
 
     

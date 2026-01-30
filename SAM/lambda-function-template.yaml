@@ -48,54 +48,6 @@ Resources:
     Properties:
       LogGroupName: !Sub "/aws/lambda/LandingBucketUpload"
       RetentionInDays: 14
-  
-  LandingQueue:
-    Type: AWS::SQS::Queue
-    Properties:
-      QueueName: !Sub "${Environment}-landing-queue"
-      VisibilityTimeout: 300
-      MessageRetentionPeriod: 864000
-      RedrivePolicy:
-        deadLetterTargetArn: !GetAtt LandingDLQ
-  
-  SanitisedQueue:
-    Type: AWS::SQS::Queue
-    Properties:
-      QueueName: !Sub "${Environment}-sanitised-queue"
-      VisibilityTimeout: 300
-      MessageRetentionPeriod: 864000
-      RedrivePolicy:
-        deadLetterTargetArn: !GetAtt SanitisedDQL
-  
-  CuratedQueue:
-    Type: AWS::SQS::Queue
-    Properties:
-      QueueName: !Sub "${Environment}-curated-queue"
-      VisibilityTimeout: 300
-      MessageRetentionPeriod: 864000
-      RedrivePolicy:
-        deadLetterTargetArn: !GetAtt CuratedDLQ
-
-  LandingDLQ:
-    Type: AWS::SQS::Queue
-    Properties:
-      QueueName: !Sub "${Environment}-landing-dlq"
-      VisibilityTimeout: 300
-      MessageRetentionPeriod: 864000
-    
-  SanitisedDQL:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: !Sub "${Environment}-sanitised-dlq"
-        VisibilityTimeout: 300
-        MessageRetentionPeriod: 864000
-
-  CuratedDLQ:
-    Type: AWS::SQS::Queue
-    Properties:
-      QueueName: !Sub "${Environment}-curated-dlq"
-      VisibilityTimeout: 300
-      MessageRetentionPeriod: 864000
     
   # EventBridge rules
   LandingSqsRule:
@@ -185,4 +137,4 @@ Outputs:
   LandingBucketFunctionArn:
     Value: !GetAtt LandingBucketUploadFunction.Arn
     Export:
-      Name: !Sub "${Environment}-LandingBucketFunctionArn"
+      Name: !Sub "${Environment}-LandingBucketFunctionArn"  

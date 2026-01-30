@@ -81,5 +81,3 @@ Resources:
     Properties:
       Name: !Sub "/${Environment}/lambdafunctions/name/landingbucketupload"
       Value: !ImportValue !Sub "${Environment}-LandingBucketFunctionArn"
-
-
