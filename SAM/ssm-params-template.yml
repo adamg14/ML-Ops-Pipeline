@@ -69,5 +69,17 @@ Resources:
       Name: !Sub "/${Environment}/services/storagebucket/arn/curatedbucketarn"
       Value: !ImportValue !Sub "${Environment}-CuratedBucketArn"
       Overwrite: true
+  
+  LandingBucketFunctionNameParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/${Environment}/lambdafunctions/name/landingbucketupload"
+      Value: !Import !Sub "${Environment}-LandingBucketFunctionName"
+  
+  LandingBucketFunctionArnParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/${Environment}/lambdafunctions/name/landingbucketupload"
+      Value: !ImportValue !Sub "${Environment}-LandingBucketFunctionArn"
 
 

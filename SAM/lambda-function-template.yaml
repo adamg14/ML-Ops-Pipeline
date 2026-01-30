@@ -49,20 +49,6 @@ Resources:
       LogGroupName: !Sub "/aws/lambda/LandingBucketUpload"
       RetentionInDays: 14
   
-  LandingBucketFuncionParam:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Value: !Ref LandingBucketUploadFunction
-      Type: String
-      Name: !Sub "${Environment}/services/lambdas/names/landingbucketfunction"
-      
-  LandingFunctionArnParam:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Value: !GetAtt LandingBucketUploadFunction.Arn
-      Type: String
-      Name: !Sub "${Environment}/services/lambdas/arn/landingbucketfunctionarn"
-  
   LandingQueue:
     Type: AWS::SQS::Queue
     Properties:
@@ -189,3 +175,14 @@ Resources:
               Condition:
                 ArnEquals:
                   aws:SourceArn: !GetAtt CuratedSqsRule.Arn
+
+Outputs:
+  LandingBucketFunctionName:
+    Value: !Ref LandingBucketUploadFunction
+    Export:
+      Name: !Sub "${Environment}-LandingBucketFunctionName"
+
+  LandingBucketFunctionArn:
+    Value: !GetAtt LandingBucketUploadFunction.Arn
+    Export:
+      Name: !Sub "${Environment}-LandingBucketFunctionArn"
