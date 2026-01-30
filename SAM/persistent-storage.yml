@@ -92,7 +92,7 @@ Resources:
       VisibilityTimeout: 300
       MessageRetentionPeriod: 864000
     
-  SanitisedDQL:
+  SanitisedDLQ:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: !Sub "${Environment}-sanitised-dlq"
@@ -146,6 +146,66 @@ Outputs:
     Value: !GetAtt CuratedBucket.Arn
     Export:
       Name: !Sub "${Environment}-CuratedBucketArn"
+  
+  CuratedQueueName:
+    Value: !Ref CuratedQueue
+    Export:
+      Name: !Sub "${Environment}-CuratedQueueName"
+  
+  CuratedQueueArn:
+    Value: !GetAtt CuratedQueue
+    Export:
+      Name: !Sub "${Environment}-CuratedQueueArn"
+  
+  LandingQueueName:
+    Value: !Ref LandingQueue
+    Export:
+      Name: !Sub "${Environment}-LandingQueueName"
+  
+  LandingQueueArn:
+    Value: !GetAtt LandingQueue.Arn
+    Export:
+      Name: !Sub "${Environment}-LandingQueueArn"
+  
+  SanitisedQueueName:
+    Value: !Ref SanitisedQueue
+    Export:
+      Name: !Sub "${Environment}-SanitisedQueueName"
+  
+  SanitisedQueueArn:
+    Value: !GetAtt SanitisedQueue.Arn
+    Export:
+      Name: !Sub "${Environment}-SanitisedQueueArn"
+  
+  LandingDLQName:
+    Value: !Ref LandingDLQ
+    Export:
+      Name: !Sub "${Environment}-LandingDLQ"
+  
+  LandingDLQArn:
+    Value: !GetAtt LandingDLQ.Arn
+    Export:
+      Name: !Sub "${Environment}-LandingDLQArn"
+  
+  SanitisedDLQName:
+    Value: !Ref Sanitised
+    Export:
+      Name: !Sub "$(Environment}-SantisedDLQ"
+
+  SanitisedDLQArn:
+    Value: !GetAtt SanitisedDLQ.Arn
+    Export:
+      Name: !Sub "${Environment}-SanitisedDLQArn"
+  
+  CuratedDLQ:
+    Value: !GetAtt CuratedDLQ
+    Export:
+      Name: !Sub "${Environment}-CuratedDLQ"
+
+  CuratedDLQArn:
+    Value: !GetAtt CuratedDLQ.Arn
+    Export:
+      Name: !Sub $"{Environment}-CuratedDLQArn"
   
 
     

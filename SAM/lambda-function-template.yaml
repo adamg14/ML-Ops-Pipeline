@@ -62,7 +62,7 @@ Resources:
               - "{{resolve:ssm:/${Environment}/services/buckets/names/landingbucket}}"
       State: "ENABLED"
       Targets:
-        - Arn: !GetAtt LandingQueue.Arn
+        - Arn: !ImportValue !Sub ${Environment}-LandingQueueName"
           Id: "LandingQueueTarget"
 
   SanitisedSqsRule:
@@ -77,7 +77,7 @@ Resources:
               - "{{resolve:ssm:/${Environment}/services/buckets/names/sanitisedbucket}}"
       State: "ENABLED"
       Targets:
-        - Arn: !GetAtt SanitisedQueue.Arn
+        - Arn: !ImportValue !Sub "${Environment}-SanitisedQueueName"
           Id: "SanitisedQueueTarget"
     
     CuratedSqsRule:
@@ -92,7 +92,7 @@ Resources:
                 - "{{resolve:ssm:/${Environment}/services/buckets/names/curatedbucket}}"
         State: "ENABLED"
         Targets:
-          - Arn: !GetAtt CuratedQueue.Arn
+          - Arn: !ImportValue !Sub  $"{Environment}-CuratedQueueName"
             Id: "CuratedQueueTarget"
 
   # this policy will allow EventBridge to put messages in SQS
@@ -100,30 +100,30 @@ Resources:
       Type: AWS::SQS::QueuePolicy
       Properties:
         Queues: [
-          !Ref LandingQueue,
-          !Ref SanitisedQueue,
-          !Ref CuratedQueue
+          !ImportValue LandingQueueName,
+          !ImportValue SanitisedQueueName,
+          !ImportValue CuratedQueueName
         ]
         PolicyDocument:
           Statement:
             - Effect: Allow
               Principal: {Service: "events.amazonaws.com"}
               Action: "sqs:SendMessage"
-              Resource: !GetAtt LandingQueue.Arn
+              Resource: !ImportValue "${Environment}-LandingQueueArn"
               Condition:
                 ArnEquals:
                   aws:SourceArn: !GetAtt LandingSqsRule.Arn
             - Effect: Allow
               Principal: {Service: "events.amazonaws.com"}
               Action: "sqs:SendMessage"
-              Resource: !GetAtt SanitisedQueue.Arn
+              Resource: !ImportValue "${Environment}-SanitisedQueueArn"
               Condition:
                 ArnEquals:
                   aws:SourceArn: !GetAtt SanitisedSqsRule.Arn
             - Effect: Allow
               Principal: {Service: "events.amazonaws.com"}
               Action: "sqs:SendMessage"
-              Resource: !GetAtt CuratedQueue.Arn
+              Resource: !ImportValue "${Environment}-CuratedQueueArn"
               Condition:
                 ArnEquals:
                   aws:SourceArn: !GetAtt CuratedSqsRule.Arn
