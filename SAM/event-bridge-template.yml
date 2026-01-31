@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues:
+      - development
+      - production
+      
+LandingSqsRule:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source: ["aws.s3"]
+        detail-type: ["Object Creation"]
+        detail:
+          bucket:
+            name: 
+              - Fn::ImportValue:
+                  Fn::Sub: "${Environment}-landing-bucket-name"
+      State: "ENABLED"
+      Targets:
+        - Arn:
+            Fn::ImportValue:
+              Fn::Sub: "${Environment}-landing-queue-arn"
+          Id: "LandingQueueTarget"
