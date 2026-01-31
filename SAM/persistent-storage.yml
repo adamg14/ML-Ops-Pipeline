@@ -25,7 +25,7 @@ Resources:
     Properties:
       BucketName: !Sub "${Environment}-sanitised-bucket"
       VersioningConfiguration:
-      Status: Enabled
+        Status: Enabled
             
   CuratedBucket:
     Type: AWS::S3::Bucket
@@ -34,7 +34,7 @@ Resources:
     Properties:
       BucketName: !Sub "${Environment}-curated-bucket"
       VersioningConfiguration:
-      Status: Enabled
+        Status: Enabled
     
   FileTable:
     Type: AWS::DynamoDB::Table
@@ -57,33 +57,16 @@ Resources:
   
   LandingQueue:
     Type: AWS::SQS::Queue
-    DependsOn: LandingDLQ
     Properties:
       QueueName: !Sub "${Environment}-landing-queue"
       VisibilityTimeout: 300
       MessageRetentionPeriod: 864000
       RedrivePolicy:
-        deadLetterTargetArn: !GetAtt LandingDLQ.Arn
-  
-  SanitisedQueue:
-    Type: AWS::SQS::Queue
-    DependsOn: SanitisedDQL
-    Properties:
-      QueueName: !Sub "${Environment}-sanitised-queue"
-      VisibilityTimeout: 300
-      MessageRetentionPeriod: 864000
-      RedrivePolicy:
-        deadLetterTargetArn: !GetAtt SanitisedDQL.Arn
-
-  CuratedQueue:
-    Type: AWS::SQS::Queue
-    DependsOn: CuratedDLQ.Arn
-    Properties:
-      QueueName: !Sub "${Environment}-curated-queue"
-      VisibilityTimeout: 300
-      MessageRetentionPeriod: 864000
-      RedrivePolicy:
-        deadLetterTargetArn: !GetAtt CuratedDLQ 
+        deadLetterTargetArn:
+          Fn::GetAtt:
+            - "LandingDLQ"
+            - "Arn"
+        maxReceiveCount: 5
     
   LandingDLQ:
     Type: AWS::SQS::Queue
@@ -91,123 +74,16 @@ Resources:
       QueueName: !Sub "${Environment}-landing-dlq"
       VisibilityTimeout: 300
       MessageRetentionPeriod: 864000
-    
-  SanitisedDLQ:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: !Sub "${Environment}-sanitised-dlq"
-        VisibilityTimeout: 300
-        MessageRetentionPeriod: 864000
 
-  CuratedDLQ:
-    Type: AWS::SQS::Queue
-    Properties:
-      QueueName: !Sub "${Environment}-curated-dlq"
-      VisibilityTimeout: 300
-      MessageRetentionPeriod: 864000
-    
 Outputs:
-  FileTableName:
-    Value: !Ref FileTable
-    Export:
-      Name: !Sub "${Environment}-FileTableName"
-
-  FileTableArn:
-    Value: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${Environment}-file-table"
-    Export:
-      Name: !Sub "${Environment}-FileTableArn"
-  
   LandingBucketName:
+    Description: Output referencing the landing bucket
     Value: !Ref LandingBucket
     Export:
-      Name: !Sub "${Environment}-LandingBucketName"
+      Name: !Sub "${Environment}-landing-bucket-name"
   
   LandingBucketArn:
+    Description: Output referencing the landing bucket's ARN identifier
     Value: !GetAtt LandingBucket.Arn
     Export:
-      Name: !Sub "${Environment}-LandingBucketArn"
-
-  SanitisedBucketName:
-    Value: !Ref SanitisedBucket
-    Export:
-      Name: !Sub "${Environment}-SanitisedBucketName"
-  
-  SanitisedBucketArn:
-    Value: !GetAtt SanitisedBucket.Arn
-    Export:
-      Name: !Sub "${Environment}-SanitisedBucketArn"
-  
-  CuratedBucketName:
-    Value: !Ref CuratedBucket
-    Export:
-      Name: !Sub "${Environment}-CuratedBucketName"
-  
-  CuratedBucketArn:
-    Value: !GetAtt CuratedBucket.Arn
-    Export:
-      Name: !Sub "${Environment}-CuratedBucketArn"
-  
-  CuratedQueueName:
-    Value: !Ref CuratedQueue
-    Export:
-      Name: !Sub "${Environment}-CuratedQueueName"
-  
-  CuratedQueueArn:
-    Value: !GetAtt CuratedQueue
-    Export:
-      Name: !Sub "${Environment}-CuratedQueueArn"
-  
-  LandingQueueName:
-    Value: !Ref LandingQueue
-    Export:
-      Name: !Sub "${Environment}-LandingQueueName"
-  
-  LandingQueueArn:
-    Value: !GetAtt LandingQueue.Arn
-    Export:
-      Name: !Sub "${Environment}-LandingQueueArn"
-  
-  SanitisedQueueName:
-    Value: !Ref SanitisedQueue
-    Export:
-      Name: !Sub "${Environment}-SanitisedQueueName"
-  
-  SanitisedQueueArn:
-    Value: !GetAtt SanitisedQueue.Arn
-    Export:
-      Name: !Sub "${Environment}-SanitisedQueueArn"
-  
-  LandingDLQName:
-    Value: !Ref LandingDLQ
-    Export:
-      Name: !Sub "${Environment}-LandingDLQ"
-  
-  LandingDLQArn:
-    Value: !GetAtt LandingDLQ.Arn
-    Export:
-      Name: !Sub "${Environment}-LandingDLQArn"
-  
-  SanitisedDLQName:
-    Value: !Ref Sanitised
-    Export:
-      Name: !Sub "$(Environment}-SantisedDLQ"
-
-  SanitisedDLQArn:
-    Value: !GetAtt SanitisedDLQ.Arn
-    Export:
-      Name: !Sub "${Environment}-SanitisedDLQArn"
-  
-  CuratedDLQ:
-    Value: !GetAtt CuratedDLQ
-    Export:
-      Name: !Sub "${Environment}-CuratedDLQ"
-
-  CuratedDLQArn:
-    Value: !GetAtt CuratedDLQ.Arn
-    Export:
-      Name: !Sub $"{Environment}-CuratedDLQArn"
-  
-
-    
-
-    
+      Name: !Sub "${Environment}-landing-bucket-arn"

@@ -9,7 +9,7 @@ echo "Checking if AWS CLI is installed..."
 aws --version
 
 echo "Checking AWS identity..."
-aws sts get-caller-identity --profile $AWS_PROFILE
+aws sts get-caller-identity
 
 echo "Checking SAM is installed..."
 sam --version || {
