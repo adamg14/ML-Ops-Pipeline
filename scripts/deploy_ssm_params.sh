@@ -1,22 +1,21 @@
 #!/bin/bash
 
-# When common errors occur, the script will immediately fail
-set -euo pipefail
+# when common error occurs, the script will immediately fail
+set -euo pipefall
 
 # configuration
 ENVIRONMENT=$2
 
-WORK_DIR="$(pwd)"
+WORKING_DIR="$(pwd)"
 AWS_PROFILE="mlops_developer"
-
 
 echo "This is the environment: $ENVIRONMENT"
 
 AWS_REGION="eu-north-1"
-STACK_NAME="$ENVIRONMENT-lambda-functions"
+STACK_NAME="$ENVIRONMENT-ssm-params"
 echo $STACK_NAME
 
-TEMPLATE_FILE="$WORK_DIR/SAM/lambda-function-template.yaml"
+TEMPLATE_FILE="$WORK_DIR/SAM/ssm-params-template.yml"
 
 echo "Checking AWS identity..."
 aws sts get-caller-identity --profile $AWS_PROFILE
@@ -28,15 +27,15 @@ sam --version || {
 }
 
 echo "Building SAM template..."
-sam build --template-file  "$TEMPLATE_FILE"
+sam build --template-file "$TEMPLATE_FILE"
 echo "SAM template built successfully."
 
-echo "Deploying SAM template..."
+echo "Deploy SAM template..."
 sam deploy \
     --profile $AWS_PROFILE \
     --region $AWS_REGION \
-    --template-file "$TEMPLATE_FILE" \
+    --template-file "" \
     --stack-name $STACK_NAME \
     --parameter-overrides \
     Environment="$ENVIRONMENT"
-echo "SAM deployment completed successfully!"
+echo "SAM deployment completed sucessfully!"
