@@ -57,6 +57,8 @@ Resources:
   
   LandingQueue:
     Type: AWS::SQS::Queue
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       QueueName: !Sub "${Environment}-landing-queue"
       VisibilityTimeout: 300
@@ -70,10 +72,61 @@ Resources:
     
   LandingDLQ:
     Type: AWS::SQS::Queue
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       QueueName: !Sub "${Environment}-landing-dlq"
       VisibilityTimeout: 300
       MessageRetentionPeriod: 864000
+  
+  SanitisedQueue:
+    Type: AWS::SQS::Queue
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      QueueName: !Sub "${Environment}-sanitised-queue"
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 864000
+      RedrivePolicy:
+        deadLetterTargetArn:
+          Fn::GetAtt:
+            - "SanitisedDLQ"
+            - "Arn"
+        maxReceiveCount: 5
+  
+  SanitisedDLQ:
+    Type: AWS::SQS::Queue
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      QueueName: !Sub "${Environment}-santised-dlq"
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 864000
+  
+  CuratedQueue:
+    Type: AWS::SQS::Queue
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      QueueName: !Sub "${Environment}-curated-queue"
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 864000
+      RedrivePolicy:
+        deadLetterTargetArn:
+          Fn::GetAtt:
+            - "CuratedDLQ"
+            - "Arn"
+        maxReceiveCount: 5
+  
+  CuratedDLQ:
+    Type: AWS::SQS::Queue
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      QueueName: !Sub "${Environment}-curated-dlq"
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 864000
+
 
 Outputs:
   LandingBucketName:
@@ -87,3 +140,93 @@ Outputs:
     Value: !GetAtt LandingBucket.Arn
     Export:
       Name: !Sub "${Environment}-landing-bucket-arn"
+  
+  SanitisedBucketName:
+    Description: Output referencing the sanitised bucket
+    Value: !Ref SanitisedBucket
+    Export:
+      Name: !Sub $"{Environment}-landing-bucket-name"
+
+  SanitisedBucketArn:
+    Description: Output referencing the sanitised bucket arn
+    Value: !GetAtt SanitisedBucket.Arn
+    Export:
+      Name: !Sub "${Environment}-sanitised-bucket-arn"
+  
+  CuratedBucketName:
+    Description: Ouptut referencing the curated bucket
+    Value: !Ref CuratedBucket
+    Export:
+      Name: !Sub "${Environment}-curated-bucket-name"
+  
+  FileTableName:
+    Description: Output referencing the dynamodb table 'FileTable'
+    Value: !Ref FileTable
+    Export:
+      Name: !Sub "${Environment}-file-table-name"
+
+  FileTableArn:
+    Description: Output referencing the dynamodb table arn
+    Value: !GetAtt FileTable.Arn
+    Export:
+      Name: !Sub "${Environment}-file-table-arn"
+  
+  LandingQueueName:
+    Description: Output referening the sqs landing queue for landing files
+    Value: !Ref LandingQueue
+    Export:
+      Name: !Sub "${Environment}-landing-queue-name"
+
+  LandingQueueArn:
+    Description: Output referencing the arn of the sqs queue for landing files
+    Value: !GetAtt LandingQueue.Arn
+    Export: 
+      Name: !Sub "${Environment}-landing-queue-arn"
+  
+  LandingDLQName:
+    Description: Output referencing the dead letter queue for landing files
+    Value: !Ref LandingDLQ
+    Export:
+      Name: !Sub "${Environment}-landing-dl-queue-name"
+
+  LandingDLQArn:
+    Description: Output referencing the arn of the dead letter queue for landing files
+    Value: !GetAtt LandingDLQ.Arn
+    Export:
+      Name: !Sub "${Environment}-landing-dl-queue-arn"
+  
+  SanitisedQueueName:
+    Description: Output referencing the SQS queue for files landing in the sanitised bucket
+    Value: !Ref SanitisedQueue
+    Export:
+      Name: !Sub "${Environment}-sanitised-queue-name"
+
+  SanitisedQueueArn:
+    Description: Output referencing the sanitised sqs queue arn
+    Value: !GetAtt SanitisedQueue.Arn
+    Export:
+      Name: !Sub "${Environment}-sanitised-queue-arn"
+
+  CuratedQueueName:
+    Description: Output referencing the SQS queue for files landing in the curated bucket
+    Value: !Ref CuratedQueue
+    Export:
+      Name: !Sub "${Environment}-curated-queue-name"
+
+  CuratedQueueArn:
+    Description: Output referencing the ARN of the SQS queue for files landing in the curate bucket
+    Value: !GetAtt CuratedQueue.Arn
+    Export:
+      Name: !Sub "${Environment}-curated-queue-arn"
+
+  CuratedDLQName:
+    Description: Output referencing the DLQ for the sqs curated queue
+    Value: !Ref CuratedDLQ
+    Export:
+      Name: !Sub "${Environment}-curated-dl-queue-name"
+
+  CuratedDLQArn:
+    Description: Output referencing the ARN of the DLQ for the sqs curated queue
+    Value: !GetAtt CuratedDLQ.Arn
+    Export:
+      Name: !Sub "${Environment}-curated-dl-queue-arn"

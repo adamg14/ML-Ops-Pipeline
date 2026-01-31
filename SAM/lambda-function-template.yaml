@@ -62,38 +62,9 @@ Resources:
               - "{{resolve:ssm:/${Environment}/services/buckets/names/landingbucket}}"
       State: "ENABLED"
       Targets:
-        - Arn: !ImportValue !Sub ${Environment}-LandingQueueName"
-          Id: "LandingQueueTarget"
-
-  SanitisedSqsRule:
-    Type: AWS::Events::Rule
-    Properties:
-      EventPattern:
-        source: ["aws.s3"]
-        detail-type: ["Object Creation"]
-        detail:
-          bucket:
-            name: 
-              - "{{resolve:ssm:/${Environment}/services/buckets/names/sanitisedbucket}}"
-      State: "ENABLED"
-      Targets:
-        - Arn: !ImportValue !Sub "${Environment}-SanitisedQueueName"
-          Id: "SanitisedQueueTarget"
-    
-    CuratedSqsRule:
-      Type: AWS::Events::Rule
-      Properties:
-        EventPattern:
-          source: ["aws.s3"]
-          detail-type: ["Object Creation"]
-          detail:
-            bucket:
-              name: 
-                - "{{resolve:ssm:/${Environment}/services/buckets/names/curatedbucket}}"
-        State: "ENABLED"
-        Targets:
-          - Arn: !ImportValue !Sub  $"{Environment}-CuratedQueueName"
-            Id: "CuratedQueueTarget"
+       - Arn:
+          Fn::ImportValue:
+            Fn::Sub: ${Environment}-LandingQueueName"
 
   # this policy will allow EventBridge to put messages in SQS
     SqsQueuePolicy:
