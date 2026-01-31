@@ -126,8 +126,25 @@ Resources:
       QueueName: !Sub "${Environment}-curated-dlq"
       VisibilityTimeout: 300
       MessageRetentionPeriod: 864000
-
-
+  
+  # This is the policy attached to the SQS queue that allows the event brige to put messages in the queue
+  SQSQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Ref LandingQueue
+        - !Ref SanitisedQueue
+        - !Ref CuratedQueue
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sqs:SendMessage
+            Resource:
+              - !GetAtt LandingQueue.Arn
+              - !GetAtt SanitisedQueue.Arn
+              - !GetAtt CuratedQueue.Arn
 Outputs:
   LandingBucketName:
     Description: Output referencing the landing bucket

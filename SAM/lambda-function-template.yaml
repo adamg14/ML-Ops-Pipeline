@@ -59,45 +59,14 @@ Resources:
         detail:
           bucket:
             name: 
-              - "{{resolve:ssm:/${Environment}/services/buckets/names/landingbucket}}"
+              - Fn::ImportValue:
+                  Fn::Sub: "${Environment}-landing-bucket-name"
       State: "ENABLED"
       Targets:
-       - Arn:
-          Fn::ImportValue:
-            Fn::Sub: ${Environment}-LandingQueueName"
-
-  # this policy will allow EventBridge to put messages in SQS
-    SqsQueuePolicy:
-      Type: AWS::SQS::QueuePolicy
-      Properties:
-        Queues: [
-          !ImportValue LandingQueueName,
-          !ImportValue SanitisedQueueName,
-          !ImportValue CuratedQueueName
-        ]
-        PolicyDocument:
-          Statement:
-            - Effect: Allow
-              Principal: {Service: "events.amazonaws.com"}
-              Action: "sqs:SendMessage"
-              Resource: !ImportValue "${Environment}-LandingQueueArn"
-              Condition:
-                ArnEquals:
-                  aws:SourceArn: !GetAtt LandingSqsRule.Arn
-            - Effect: Allow
-              Principal: {Service: "events.amazonaws.com"}
-              Action: "sqs:SendMessage"
-              Resource: !ImportValue "${Environment}-SanitisedQueueArn"
-              Condition:
-                ArnEquals:
-                  aws:SourceArn: !GetAtt SanitisedSqsRule.Arn
-            - Effect: Allow
-              Principal: {Service: "events.amazonaws.com"}
-              Action: "sqs:SendMessage"
-              Resource: !ImportValue "${Environment}-CuratedQueueArn"
-              Condition:
-                ArnEquals:
-                  aws:SourceArn: !GetAtt CuratedSqsRule.Arn
+        - Arn:
+            Fn::ImportValue:
+              Fn::Sub: "${Environment}-landing-queue-arn"
+          Id: "LandingQueueTarget"
 
 Outputs:
   LandingBucketFunctionName:
