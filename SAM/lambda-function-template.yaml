@@ -52,12 +52,23 @@ Resources:
       RetentionInDays: 14
     
 Outputs:
+
   LandingBucketFunctionName:
     Value: !Ref LandingBucketUploadFunction
     Export:
-      Name: !Sub "${Environment}-LandingBucketFunctionName"
+      Name: !Sub "${Environment}-landing-bucket-function-name"
 
   LandingBucketFunctionArn:
     Value: !GetAtt LandingBucketUploadFunction.Arn
     Export:
-      Name: !Sub "${Environment}-LandingBucketFunctionArn"  
+      Name: !Sub "${Environment}-landing-bucket-function-name"  
+    
+  LandingBucketUploadLogGroupName:
+    Value: !Ref LandingBucketUploadLogGroup
+    Export:
+      Name: !Sub "${Environment}-landing-bucket-upload-log-group-name"
+    
+    LandingBucketUploadLogGroupArn:
+    Value: !GetAtt LandingBucketUploadLogGroup.Arn
+    Export:
+      Name: !Sub "${Environment}-landing-bucket-upload-log-group-arn"
