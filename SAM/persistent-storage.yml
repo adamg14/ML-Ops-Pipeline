@@ -17,6 +17,9 @@ Resources:
       BucketName: !Sub "${Environment}-landing-bucket"
       VersioningConfiguration:
         Status: Enabled
+      NotificationConfiguration:
+        EventBridgeConfiguration:
+          EventBridgeEnabled: true
 
   SanitisedBucket:
     Type: AWS::S3::Bucket
@@ -26,6 +29,9 @@ Resources:
       BucketName: !Sub "${Environment}-sanitised-bucket"
       VersioningConfiguration:
         Status: Enabled
+      NotificationConfiguration:
+        EventBridgeConfiguration:
+          EventBridgeEnabled: true
             
   CuratedBucket:
     Type: AWS::S3::Bucket
@@ -35,6 +41,9 @@ Resources:
       BucketName: !Sub "${Environment}-curated-bucket"
       VersioningConfiguration:
         Status: Enabled
+      NotificationConfiguration:
+        EventBridgeConfiguration:
+          EventBridgeEnabled: true
     
   FileTable:
     Type: AWS::DynamoDB::Table
@@ -162,7 +171,7 @@ Outputs:
     Description: Output referencing the sanitised bucket
     Value: !Ref SanitisedBucket
     Export:
-      Name: !Sub "${Environment}-landing-bucket-name"
+      Name: !Sub "${Environment}-sanitised-bucket-name"
 
   SanitisedBucketArn:
     Description: Output referencing the sanitised bucket arn
@@ -228,7 +237,19 @@ Outputs:
     Value: !GetAtt SanitisedQueue.Arn
     Export:
       Name: !Sub "${Environment}-sanitised-queue-arn"
-
+  
+  SanitisedDLQName:
+    Description: Output referencing the dead letter queue for sanitised files
+    Value: !Ref SanitisedDLQ
+    Export:
+      Name: !Sub "${Environment}-sanitised-dl-queue-name"
+  
+  SanitisedDLQArn:
+    Description: Output referencing the arn of the dead letter queue for the sanitised files
+    Value: !GetAtt SanitisedDLQ.Arn
+    Export:
+      Name: !Sub "${Environment}-sanitised-dl-queue-arn"
+      
   CuratedQueueName:
     Description: Output referencing the SQS queue for files landing in the curated bucket
     Value: !Ref CuratedQueue

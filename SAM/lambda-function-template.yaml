@@ -39,16 +39,16 @@ Resources:
     Properties:
       FunctionName: !Sub "${Environment}-landing-bucket-upload"
       CodeUri: ../lambdas/landing_trigger
-    Environment:
-      Variables:
-        ENVIRONMENT: !Ref Environment
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environment
     
   LandingBucketUploadLogGroup:
     Type: AWS::Logs::LogGroup
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
-      LogGroupName: !Sub "/aws/lambda/LandingBucketUpload"
+      LogGroupName: !Sub "/aws/lambda/${Environment}-landing-bucket-upload"
       RetentionInDays: 14
     
 Outputs:

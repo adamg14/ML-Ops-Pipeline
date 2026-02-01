@@ -55,7 +55,7 @@ Resources:
       Value:
         Fn::ImportValue:
           Fn::Sub:
-            "${Environment}-landing-bucket-name"
+            "${Environment}-sanitised-bucket-name"
   
   SanitisedBucketArnParam:
     Type: AWS::SSM::Parameter
@@ -96,7 +96,7 @@ Resources:
   LandingBucketFunctionArnParam:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: !Sub "/${Environment}/services/lambdafunction/arm/landingbucketupload"
+      Name: !Sub "/${Environment}/services/lambdafunction/arn/landingbucketupload"
       Type: String
       Value:
         Fn::ImportValue:
