@@ -162,7 +162,7 @@ Outputs:
     Description: Output referencing the sanitised bucket
     Value: !Ref SanitisedBucket
     Export:
-      Name: !Sub $"{Environment}-landing-bucket-name"
+      Name: !Sub "${Environment}-landing-bucket-name"
 
   SanitisedBucketArn:
     Description: Output referencing the sanitised bucket arn
@@ -176,6 +176,11 @@ Outputs:
     Export:
       Name: !Sub "${Environment}-curated-bucket-name"
   
+  CuratedBucketArn:
+    Description: Output referencing the curated bucket arn
+    Value: !GetAtt CuratedBucket.Arn
+    Export:
+      Name: !Sub "${Environment}-curated-bucket-arn"
   FileTableName:
     Description: Output referencing the dynamodb table 'FileTable'
     Value: !Ref FileTable

@@ -61,14 +61,14 @@ Outputs:
   LandingBucketFunctionArn:
     Value: !GetAtt LandingBucketUploadFunction.Arn
     Export:
-      Name: !Sub "${Environment}-landing-bucket-function-name"  
+      Name: !Sub "${Environment}-landing-bucket-function-arn"  
     
   LandingBucketUploadLogGroupName:
     Value: !Ref LandingBucketUploadLogGroup
     Export:
       Name: !Sub "${Environment}-landing-bucket-upload-log-group-name"
     
-    LandingBucketUploadLogGroupArn:
+  LandingBucketUploadLogGroupArn:
     Value: !GetAtt LandingBucketUploadLogGroup.Arn
     Export:
       Name: !Sub "${Environment}-landing-bucket-upload-log-group-arn"

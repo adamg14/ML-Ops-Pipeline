@@ -14,70 +14,91 @@ Resources:
     Properties: 
       Name: !Sub "/${Environment}/services/dynamodb/names/filetablename"
       Type: String
-      Value: !ImportValue !Sub "${Environment}-FileTableName"
-      Overwrite: true
+      Value:
+        Fn::ImportValue:
+          Fn::Sub: "${Environment}-file-table-name"
 
   FileTableArnParam:
     Type: AWS::SSM::Parameter
     Properties:
       Name: !Sub "/${Environment}/services/dynamodb/arns/filetablearn"
       Type: String
-      Value: !ImportValue !Sub "${Environment}-FileTableArn"
-      Overwrite: true
+      Value:
+        Fn::ImportValue:
+          Fn::Sub:
+            "${Environment}-file-table-arn"
 
   LandingBucketNameParam:
     Type: AWS::SSM::Parameter
     Properties:
       Name: !Sub "/${Environment}/services/storagebucket/names/landingbucketname"
       Type: String
-      Value: !ImportValue !Sub "${Environment}-LandingBucketName"
-      Overwrite: true
+      Value:
+        Fn::ImportValue:
+          Fn::Sub: "${Environment}-landing-bucket-name"
   
   LandingBucketArnParam:
     Type: AWS::SSM::Parameter
     Properties:
       Name: !Sub "/${Environment}/services/storagebucket/arn/landingbucketarn"
       Type: String
-      Value: !ImportValue !Sub "${Environment}-LandingBucketArn"
-      Overwrite: true
+      Value:
+        Fn::ImportValue:
+          Fn::Sub:
+            "${Environment}-landing-bucket-arn"
   
   SanitisedBucketNameParam:
     Type: AWS::SSM::Parameter
     Properties:
       Name: !Sub "/${Environment}/services/storagebucket/names/sanitisedbucketname"
       Type: String
-      Value: !ImportValue !Sub "${Environment}-SanitisedBucketName"
-      Overwrite: true
+      Value:
+        Fn::ImportValue:
+          Fn::Sub:
+            "${Environment}-landing-bucket-name"
   
   SanitisedBucketArnParam:
     Type: AWS::SSM::Parameter
     Properties:
       Name: !Sub "/${Environment}/services/storagebucket/arn/sanitisedbucketarn"
-      Value: !ImportValue !Sub "${Environment}-SanitisedBucketArn"
-      Overwrite: true
+      Type: String
+      Value:
+        Fn::ImportValue:
+          Fn::Sub: "${Environment}-sanitised-bucket-arn"
   
   CuratedBucketNameParam:
     Type: AWS::SSM::Parameter
     Properties:
       Name: !Sub "/${Environment}/services/storagebucket/names/curatedbucketname"
-      Value: !ImportValue !Sub "${Environment}-CuratedBucketName"
-      Overwrite: true
+      Type: String
+      Value:
+        Fn::ImportValue:
+          Fn::Sub: "${Environment}-curated-bucket-name"
 
   CuratedBucketArnParam:
     Type: AWS::SSM::Parameter
     Properties:
       Name: !Sub "/${Environment}/services/storagebucket/arn/curatedbucketarn"
-      Value: !ImportValue !Sub "${Environment}-CuratedBucketArn"
-      Overwrite: true
+      Type: String
+      Value:
+        Fn::ImportValue:
+          Fn::Sub: "${Environment}-curated-bucket-arn"
   
   LandingBucketFunctionNameParam:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: !Sub "/${Environment}/lambdafunctions/name/landingbucketupload"
-      Value: !Import !Sub "${Environment}-LandingBucketFunctionName"
+      Name: !Sub "/${Environment}/services/lambdafunction/name/landingbucketupload"
+      Type: String
+      Value:
+        Fn::ImportValue:
+          Fn::Sub: "${Environment}-landing-bucket-function-name"
   
   LandingBucketFunctionArnParam:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: !Sub "/${Environment}/lambdafunctions/name/landingbucketupload"
-      Value: !ImportValue !Sub "${Environment}-LandingBucketFunctionArn"
+      Name: !Sub "/${Environment}/services/lambdafunction/arm/landingbucketupload"
+      Type: String
+      Value:
+        Fn::ImportValue:
+          Fn::Sub:
+            "${Environment}-landing-bucket-function-arn"
