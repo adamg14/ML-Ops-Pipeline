@@ -9,11 +9,17 @@ ENVIRONMENT=$2
 WORK_DIR="$(pwd)"
 AWS_PROFILE="mlops_developer"
 
+echo "This is the environment: $ENVIRONMENT"
+
 AWS_REGION="eu-north-1"
-STACK_NAME="$ENVIRONMENT-event-bridge"
+STACK_NAME="$ENVIRONMENT-event-bridge-rules"
+
 echo $STACK_NAME
 
 TEMPLATE_FILE="$WORK_DIR/SAM/event-bridge-template.yml"
+
+echo "Checking AWS identity..."
+aws sts get-caller-identity --profile $AWS_PROFILE
 
 echo "Checking SAM is installed..."
 sam --version || {
