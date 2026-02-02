@@ -25,3 +25,9 @@ Resources:
               Fn::ImportValue:
                 Fn::Sub: "${Environment}-landing-queue-arn"
             Id: "LandingQueueTarget"
+
+Outputs:
+  LandingSqsRuleArn:
+    Value: !GetAtt LandingSqsRule.Arn
+    Export:
+      Name "${Environment}-landing-sqs-rule"
