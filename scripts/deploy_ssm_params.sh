@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # when common error occurs, the script will immediately fail
-set -euo pipefall
+set -euo pipefail
 
 # configuration
 ENVIRONMENT=$2
@@ -15,7 +15,7 @@ AWS_REGION="eu-north-1"
 STACK_NAME="$ENVIRONMENT-ssm-params"
 echo $STACK_NAME
 
-TEMPLATE_FILE="$WORK_DIR/SAM/ssm-params-template.yml"
+TEMPLATE_FILE="$WORKING_DIR/SAM/ssm-params-template.yml"
 
 echo "Checking AWS identity..."
 aws sts get-caller-identity --profile $AWS_PROFILE
@@ -34,7 +34,7 @@ echo "Deploy SAM template..."
 sam deploy \
     --profile $AWS_PROFILE \
     --region $AWS_REGION \
-    --template-file "" \
+    --template-file "$TEMPLATE_FILE" \
     --stack-name $STACK_NAME \
     --parameter-overrides \
     Environment="$ENVIRONMENT"
