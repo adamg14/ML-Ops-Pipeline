@@ -7,18 +7,26 @@ Parameters:
     AllowedValues:
       - development
       - production
+
 Resources:     
   LandingSqsRule:
       Type: AWS::Events::Rule
       Properties:
         EventPattern:
           source: ["aws.s3"]
-          detail-type: ["Object Created"]
+          detail-type: ["AWS API CALL via CloudTrail"]
           detail:
-            bucket:
-              name: 
+            eventSource: ["s3.amazonaws.com"]
+            eventName:
+              - "PutObject"
+              - "CopyObject"
+              - "CompleteMultipartUpload"
+              - "PostObject"
+            requestParameters:
+              bucketName:
                 - Fn::ImportValue:
-                    Fn::Sub: "${Environment}-landing-bucket-name"
+                    Fn::Sub:
+                      "${Environment}-landing-bucket"
         State: "ENABLED"
         Targets:
           - Arn:
