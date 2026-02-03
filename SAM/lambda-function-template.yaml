@@ -52,7 +52,6 @@ Resources:
       RetentionInDays: 14
     
 Outputs:
-
   LandingBucketFunctionName:
     Value: !Ref LandingBucketUploadFunction
     Export:

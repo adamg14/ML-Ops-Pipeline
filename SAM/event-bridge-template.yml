@@ -26,7 +26,7 @@ Resources:
               bucketName:
                 - Fn::ImportValue:
                     Fn::Sub:
-                      "${Environment}-landing-bucket"
+                      "${Environment}-landing-bucket-name"
         State: "ENABLED"
         Targets:
           - Arn:
@@ -38,4 +38,4 @@ Outputs:
   LandingSqsRuleArn:
     Value: !GetAtt LandingSqsRule.Arn
     Export:
-      Name "${Environment}-landing-sqs-rule"
+      Name: !Sub "${Environment}-landing-sqs-rule"
